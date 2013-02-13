@@ -1,17 +1,22 @@
 package com.github.jcooky.mina.thrift.test.utils;
 
-import com.github.jcooky.mina.thrift.TIoAcceptorServerTransport;
-import com.github.jcooky.mina.thrift.TIoSessionTransport;
-import com.github.jcooky.mina.thrift.TMinaServer;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.server.TServer;
-import org.apache.thrift.transport.*;
+import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TServerTransport;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TMinaServerTestRule {
+import com.github.jcooky.mina.thrift.TIoAcceptorServerTransport;
+import com.github.jcooky.mina.thrift.TIoSessionTransport;
+import com.github.jcooky.mina.thrift.TMinaServer;
+
+public class ThriftMinaServer {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private int PORT = 9091;
@@ -20,18 +25,12 @@ public class TMinaServerTestRule {
 
 	private TServer server;
 	private TServerTransport socket;
-	private TTransport clientSocket;
-	private TProtocol clientProtocol;
 
-	public TMinaServerTestRule(TProcessor processor) {
+	public ThriftMinaServer(TProcessor processor) {
 		this.processor = processor;
 	}
-	
-	public TProtocol getClientProtocol() {
-		return clientProtocol;
-	}
 
-	public void starting() throws Exception {
+	public void serve() throws Exception {
 		logger.info("test log");
 
 		socket = new TIoAcceptorServerTransport(PORT);
@@ -42,16 +41,10 @@ public class TMinaServerTestRule {
 
 		server.serve();
 
-		clientSocket = new TSocket("localhost", PORT, SOCKET_TIMEOUT);
-		clientSocket = new TFramedTransport(clientSocket);
-		clientProtocol = new TCompactProtocol(clientSocket);
-		clientSocket.open();
 	}
 
-	public void finished() throws Exception {
-		clientSocket.close();
+	public void stop() throws Exception {
 		server.stop();
 		socket.close();
 	}
-
 }
