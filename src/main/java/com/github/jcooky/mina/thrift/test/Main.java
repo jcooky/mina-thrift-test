@@ -1,9 +1,11 @@
 package com.github.jcooky.mina.thrift.test;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
+import com.github.jcooky.mina.thrift.test.service.EchoServiceImpl;
+import com.github.jcooky.mina.thrift.test.service.gen.EchoService;
+import com.github.jcooky.mina.thrift.test.utils.TMinaServerTestRule;
+import com.github.jcooky.mina.thrift.test.utils.ThriftMinaServer;
+import com.github.jcooky.mina.thrift.test.utils.ThriftServer;
+import com.github.jcooky.mina.thrift.test.utils.ThriftServerTestRule;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TCompactProtocol;
@@ -12,12 +14,9 @@ import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
-import com.github.jcooky.mina.thrift.test.service.EchoServiceImpl;
-import com.github.jcooky.mina.thrift.test.service.gen.EchoService;
-import com.github.jcooky.mina.thrift.test.utils.TMinaServerTestRule;
-import com.github.jcooky.mina.thrift.test.utils.ThriftMinaServer;
-import com.github.jcooky.mina.thrift.test.utils.ThriftServer;
-import com.github.jcooky.mina.thrift.test.utils.ThriftServerTestRule;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class Main {
 	private ThriftMinaServer minaServer;
@@ -50,7 +49,7 @@ public class Main {
 	}
 	
 	private void processMultiThread(TProcessor processor) throws Exception {
-		int threadCount = 5;
+		int threadCount = 100;
 		
 		System.gc();
 		
@@ -77,6 +76,7 @@ public class Main {
 							
 							String input = UUID.randomUUID().toString();
 							String echoStr = client.echo(input);
+                            client.echo(input);
 						} catch (TException e) {
 							throw new RuntimeException(e);
 						} finally {
@@ -92,7 +92,7 @@ public class Main {
 				t.join();
 			}
 			deltaTime -= System.nanoTime() - deltaTime;
-			System.out.println("thrift time : \t" + deltaTime);
+			System.out.println("thrift time : \t\t" + deltaTime);
 	
 			System.gc();
 	
@@ -113,6 +113,7 @@ public class Main {
 									clientProtocol);
 							String input = UUID.randomUUID().toString();
 							String echoStr = client.echo(input);
+                            client.echo(input);
 						} catch (TException e) {
 							throw new RuntimeException(e);
 						} finally {
