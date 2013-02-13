@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>mina-thrift-test</groupId>
+    <artifactId>mina-thrift-test</artifactId>
+    <version>0.0.1</version>
+
+    <repositories>
+        <repository>
+            <id>mina-thrift-mvn-repo</id>
+            <url>https://raw.github.com/jcooky/mina-thrift/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.jcooky.mina.thrift</groupId>
+            <artifactId>mina-thrift</artifactId>
+            <version>0.0.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>
+                        <apply executable="thrift" dir="${basedir}">
+                            <arg value="-debug" />
+                            <arg value="-out" />
+                            <arg value="src/main/java" />
+                            <arg value="--gen" />
+                            <arg value="java" />
+                            <fileset dir="${basedir}/src/main/thrift" casesensitive="yes">
+                                <include name="**/*.thrift" />
+                            </fileset>
+                        </apply>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
