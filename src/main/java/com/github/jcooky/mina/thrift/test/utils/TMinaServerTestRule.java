@@ -35,11 +35,9 @@ public class TMinaServerTestRule {
 		logger.info("test log");
 
 		socket = new TIoAcceptorServerTransport(PORT);
-		server = new TMinaServer(new TMinaServer.Args(socket)
-				.processor(processor)
+		server = new TMinaServer(new TMinaServer.Args(socket).processor(processor)
 				.protocolFactory(new TCompactProtocol.Factory())
-				.inputTransportFactory(
-						new TIoSessionTransport.InputTransportFactory())
+				.inputTransportFactory(new TIoSessionTransport.InputTransportFactory())
 				.outputTransportFactory(new TTransportFactory()));
 
 		// new Thread() {
