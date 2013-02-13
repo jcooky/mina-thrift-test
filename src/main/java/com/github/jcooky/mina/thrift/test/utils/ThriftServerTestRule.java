@@ -15,27 +15,26 @@ public class ThriftServerTestRule {
 	public static final int PORT = 9090;
 	public static final int SOCKET_TIMEOUT = 1000;
 
-    private TProcessor processor;
+	private TProcessor processor;
 	private TServer server;
-	private TNonblockingServerSocket serverSocket ;
-    private TTransport clientTransport;
+	private TNonblockingServerSocket serverSocket;
+	private TTransport clientTransport;
 
-    private TProtocol clientProtocol;
+	private TProtocol clientProtocol;
 
-    public ThriftServerTestRule(TProcessor processor) {
-        this.processor = processor;
-    }
+	public ThriftServerTestRule(TProcessor processor) {
+		this.processor = processor;
+	}
 
-    public TProtocol getClientProtocol() {
-        return clientProtocol;
-    }
+	public TProtocol getClientProtocol() {
+		return clientProtocol;
+	}
 
 	public void starting() throws Exception {
 		serverSocket = new TNonblockingServerSocket(PORT);
-		server = new THsHaServer(new Args(serverSocket)
-												.processor(processor)
-												.protocolFactory(new TCompactProtocol.Factory())
-												.transportFactory(new TFramedTransport.Factory()));
+		server = new THsHaServer(new Args(serverSocket).processor(processor)
+				.protocolFactory(new TCompactProtocol.Factory())
+				.transportFactory(new TFramedTransport.Factory()));
 
 		new Thread() {
 			public void run() {
@@ -43,17 +42,17 @@ public class ThriftServerTestRule {
 			}
 		}.start();
 
-        //Setup the transport and protocol
-        TSocket clientSocket = new TSocket("127.0.0.1", PORT, SOCKET_TIMEOUT);
-        clientTransport = new TFramedTransport(clientSocket);
-        clientProtocol = new TCompactProtocol(clientTransport);
+		// Setup the transport and protocol
+		TSocket clientSocket = new TSocket("127.0.0.1", PORT, SOCKET_TIMEOUT);
+		clientTransport = new TFramedTransport(clientSocket);
+		clientProtocol = new TCompactProtocol(clientTransport);
 
-        //The transport must be opened before you can begin using
-        clientTransport.open();
+		// The transport must be opened before you can begin using
+		clientTransport.open();
 	}
 
 	public void finished() {
-        clientTransport.close();
+		clientTransport.close();
 		server.stop();
 		serverSocket.close();
 	}
