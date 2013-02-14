@@ -49,7 +49,7 @@ public class Main {
 	}
 	
 	private void processMultiThread(TProcessor processor) throws Exception {
-		int threadCount = 100;
+		int threadCount = 1000;
 		
 		System.gc();
 		
@@ -103,7 +103,7 @@ public class Main {
 					public void run() {
 						TTransport clientTransport = null;
 						try {
-							clientTransport = new TSocket("127.0.0.1", ThriftServer.PORT, ThriftServer.SOCKET_TIMEOUT);
+							clientTransport = new TSocket("127.0.0.1", ThriftMinaServer.PORT, ThriftMinaServer.SOCKET_TIMEOUT);
 							clientTransport = new TFramedTransport(clientTransport);
 							TProtocol clientProtocol = new TCompactProtocol(clientTransport);
 

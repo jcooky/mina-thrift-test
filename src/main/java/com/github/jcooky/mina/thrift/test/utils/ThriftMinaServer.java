@@ -19,8 +19,8 @@ import com.github.jcooky.mina.thrift.TMinaServer;
 public class ThriftMinaServer {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private int PORT = 9091;
-	private int SOCKET_TIMEOUT = 10 * 1000;
+	public static final int PORT = 9091;
+	public static final int SOCKET_TIMEOUT = 60 * 1000;
 	private TProcessor processor;
 
 	private TServer server;

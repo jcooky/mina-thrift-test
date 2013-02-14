@@ -13,7 +13,7 @@ import org.apache.thrift.transport.TTransport;
 
 public class ThriftServer {
 	public static final int PORT = 9090;
-	public static final int SOCKET_TIMEOUT = 1000;
+	public static final int SOCKET_TIMEOUT = 60*1000;
 
 	private TProcessor processor;
 	private TServer server;
