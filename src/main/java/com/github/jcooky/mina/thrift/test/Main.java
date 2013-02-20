@@ -2,10 +2,8 @@ package com.github.jcooky.mina.thrift.test;
 
 import com.github.jcooky.mina.thrift.test.service.EchoServiceImpl;
 import com.github.jcooky.mina.thrift.test.service.gen.EchoService;
-import com.github.jcooky.mina.thrift.test.utils.TMinaServerTestRule;
 import com.github.jcooky.mina.thrift.test.utils.ThriftMinaServer;
 import com.github.jcooky.mina.thrift.test.utils.ThriftServer;
-import com.github.jcooky.mina.thrift.test.utils.ThriftServerTestRule;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TCompactProtocol;
@@ -44,12 +42,11 @@ public class Main {
 	
 	public void run() throws Exception {
 		TProcessor processor = new EchoService.Processor<EchoService.Iface>(new EchoServiceImpl());
-		processSingleThread(processor);
 		processMultiThread(processor);
 	}
 	
 	private void processMultiThread(TProcessor processor) throws Exception {
-		int threadCount = 1000;
+		int threadCount = 150;
 		
 		System.gc();
 		
@@ -92,7 +89,7 @@ public class Main {
 				t.join();
 			}
 			deltaTime -= System.nanoTime() - deltaTime;
-			System.out.println("thrift time : \t\t" + deltaTime);
+			System.out.println("thrift time : \t" + deltaTime);
 	
 			System.gc();
 	
@@ -132,47 +129,6 @@ public class Main {
 			System.out.println("mina-thrift time : \t" + deltaTime);
 		} finally {
 			destroy();
-		}
-	}
-	
-	private void processSingleThread(TProcessor processor) throws Exception {
-		ThriftServerTestRule thriftServerTestRule = null;
-		TMinaServerTestRule minaServerTestRule = null;
-		TProtocol clientProtocol;
-		long deltaTime;
-
-		try {
-			thriftServerTestRule = new ThriftServerTestRule(processor);
-			thriftServerTestRule.starting();
-			clientProtocol = thriftServerTestRule.getClientProtocol();
-			EchoService.Iface client = new EchoService.Client(clientProtocol);
-
-			String input = UUID.randomUUID().toString();
-			deltaTime = System.nanoTime();
-			String echoStr = client.echo(input);
-			deltaTime -= System.nanoTime() - deltaTime;
-			System.out.println("thrift time : \t\t" + deltaTime);
-		} finally {
-			if (thriftServerTestRule != null)
-				thriftServerTestRule.finished();
-		}
-
-		System.gc();
-
-		try {
-			minaServerTestRule = new TMinaServerTestRule(processor);
-			minaServerTestRule.starting();
-			clientProtocol = minaServerTestRule.getClientProtocol();
-			EchoService.Iface client = new EchoService.Client(clientProtocol);
-
-			String input = UUID.randomUUID().toString();
-			deltaTime = System.nanoTime();
-			String echoStr = client.echo(input);
-			deltaTime -= System.nanoTime() - deltaTime;
-			System.out.println("mina-thrift time : \t" + deltaTime);
-		} finally {
-			if (minaServerTestRule != null)
-				minaServerTestRule.finished();
 		}
 	}
 	
