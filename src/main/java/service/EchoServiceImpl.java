@@ -1,7 +1,8 @@
-package com.github.jcooky.mina.thrift.test.service;
+package service;
 
-import com.github.jcooky.mina.thrift.test.service.gen.EchoService;
 import org.apache.thrift.TException;
+
+import service.gen.EchoService;
 
 /**
  * Created with IntelliJ IDEA.

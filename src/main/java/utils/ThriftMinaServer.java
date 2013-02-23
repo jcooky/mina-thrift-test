@@ -1,7 +1,11 @@
-package com.github.jcooky.mina.thrift.test.utils;
+package utils;
 
 import java.net.InetSocketAddress;
 
+import org.apache.mina.core.service.IoService;
+import org.apache.mina.core.service.IoServiceListener;
+import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -10,6 +14,10 @@ import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import service.EchoServiceImpl;
+import service.gen.EchoService;
+import service.gen.EchoService.Iface;
 
 import com.github.jcooky.mina.thrift.TIoAcceptorServerTransport;
 import com.github.jcooky.mina.thrift.TMinaServer;
@@ -28,7 +36,7 @@ public class ThriftMinaServer {
 		this.processor = processor;
 	}
 
-	public void serve() throws Exception {
+	public NioSocketAcceptor serve() throws Exception {
 		logger.info("test log");
 
 		NioSocketAcceptor acceptor;
@@ -46,9 +54,20 @@ public class ThriftMinaServer {
 
 		server.serve();
 
+		return acceptor;
 	}
 
 	public void stop() throws Exception {
 		server.stop();
+	}
+	
+	public static void main(String []args) throws Exception {
+		ThriftMinaServer server = new ThriftMinaServer(new EchoService.Processor<Iface>(new EchoServiceImpl()));
+		try {
+			server.serve();
+			Thread.currentThread().join();			
+		} finally {
+			server.stop();
+		}
 	}
 }
